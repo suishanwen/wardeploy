@@ -9,10 +9,10 @@
 <div>
     <input type="file" id="file"/>
     <select id="tomcat">
-        <option value="9093" selected>9093</option>
+        <option value="9093">9093</option>
         <option value="9193">9193</option>
         <option value="9293">9293</option>
-        <option value="9393">9393</option>
+        <option value="9393" selected>9393</option>
     </select>
     <button class="btn-primary" onclick="submit()">提交</button>
 </div>
@@ -39,6 +39,7 @@
         .catch(error => console.error('Error:', error))
         .then(response => alert("成功"));
     }
+
 
 
 
