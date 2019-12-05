@@ -39,43 +39,42 @@ def upload(environ, start_response):
     yield "ok".encode('utf-8')
 
 
+def shell(cmd):
+    logger.info(cmd)
+    _sp = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+    _sp.wait()
+
+
 def unzip(file_name):
     cmd = f"unzip /data/wardeploy/file/{file_name}"
-    logger.info(cmd)
-    subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+    shell(cmd)
 
 
 def rm(tomcat):
     cmd = f"rm -rf {tomcat}/webapps/finance"
-    logger.info(cmd)
-    subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+    shell(cmd)
 
 
 def mv(tomcat, file_name):
     cmd = f"mv /data/wardeploy/file/{file_name.split('.')[0]} {tomcat}/webapps"
-    logger.info(cmd)
-    subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+    shell(cmd)
 
 
 def cp(tomcat):
     cmd0 = f"rm -rf {tomcat}/webapps/WEB-INF/application.properties"
     cmd = f"cp {tomcat}/webapps/application.properties {tomcat}/webapps/WEB-INF/application.properties"
-    logger.info(cmd0)
-    subprocess.Popen(cmd0, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
-    logger.info(cmd)
-    subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+    shell(cmd0)
+    shell(cmd)
 
 
 def shutdown(port):
     cmd = "ps -ef | grep tomcat7_finance_" + port + " | grep -v grep | awk '{print $2}' | xargs kill -9"
-    logger.info(cmd)
-    subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+    shell(cmd)
 
 
 def start(tomcat):
     cmd = f"{tomcat}/bin/startup.sh"
-    logger.info(cmd)
-    subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+    shell(cmd)
 
 
 if __name__ == '__main__':
