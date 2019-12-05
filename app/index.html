@@ -26,6 +26,7 @@
         }
 
 
+
     </style>
 </head>
 <body>
@@ -33,8 +34,8 @@
     <div class="form-group">
         <label for="file">文件</label>
         <input type="file" id="file"/>
-        <small  class="form-text text-muted">请选择zip包，包内包含mvcost这个文件夹</small>
-        <small  class="form-text text-muted">无需关心数据库配置文件,服务端会自动替换</small>
+        <small class="form-text text-muted">请选择zip包，包内包含mvcost这个文件夹</small>
+        <small class="form-text text-muted">无需关心数据库配置文件,服务端会自动替换</small>
         <img src="https://bitcoinrobot.cn/file/upload/img.png" style="width:800px;height:400px"/>
     </div>
     <div class="form-group">
@@ -104,7 +105,10 @@
             }
         },
         success: function (data) {
-            alert("success");
+            console.log(data);
+            setTimeout(()=>{
+                $("#progressHelp").html(data);
+            },500);
         },
         error: function (xhr) {
             alert("上传出错");
@@ -116,6 +120,7 @@
     runningLog = () => {
         window.open(`${path}/log-run?tomcat=${document.getElementById("tomcat").value}`);
     };
+
 
 
 </script>

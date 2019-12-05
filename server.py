@@ -2,6 +2,13 @@ import os
 from file_read_backwards import FileReadBackwards
 from Logger import logger
 
+locker = {
+    "9093": False,
+    "9193": False,
+    "9293": False,
+    "9393": False
+}
+
 
 def get_log(file):
     with FileReadBackwards(file, encoding="utf-8") as frb:
@@ -21,21 +28,30 @@ def hello(_, start_response):
 
 
 def upload(environ, start_response):
+    start_response('200 OK', [('Content-type', 'text/html')])
     params = environ['params']
     port = params.get('tomcat')
-    tomcat = f"/data/tomcat7_finance_{port}"
-    name = params.get("name")
-    file = params.get("file")
-    with open(f"file/{port}/{name}", 'wb') as f:
-        f.write(file)
-    shutdown(port)
-    unzip(port, name)
-    rm(tomcat)
-    mv(tomcat, port)
-    cp(tomcat)
-    start(tomcat)
-    start_response('200 OK', [('Content-type', 'text/html')])
-    yield "ok".encode('utf-8')
+    if locker[port]:
+        yield f"{port}当前正在处理锁定中,请稍后再试".encode('utf-8')
+    else:
+        locker[port] = True
+        try:
+            tomcat = f"/data/tomcat7_finance_{port}"
+            name = params.get("name")
+            file = params.get("file")
+            with open(f"file/{port}/{name}", 'wb') as f:
+                f.write(file)
+            shutdown(port)
+            unzip(port, name)
+            rm(tomcat)
+            mv(tomcat, port)
+            cp(tomcat)
+            start(tomcat)
+        except Exception as e:
+            logger.error(str(e))
+        finally:
+            locker[port] = False
+    yield "成功".encode('utf-8')
 
 
 def shell(cmd):
