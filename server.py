@@ -46,8 +46,8 @@ def shell(cmd):
 
 
 def unzip(file_name):
-    cmd = f"cd /data/wardeploy/file" \
-          f"unzip /data/wardeploy/file/{file_name}"
+    cmd = f"""cd /data/wardeploy/file
+          unzip /data/wardeploy/file/{file_name}"""
     shell(cmd)
 
 
@@ -74,8 +74,9 @@ def shutdown(port):
 
 
 def start(tomcat):
-    cmd = f"cd {tomcat}/bin" \
-          f"./startup.sh"
+    cmd = f"""cd {tomcat}/bin
+        ./startup.sh
+    """
     shell(cmd)
 
 
