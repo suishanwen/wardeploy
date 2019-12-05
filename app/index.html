@@ -57,7 +57,7 @@
     </div>
 </form>
 <div class="form-group">
-    <button type="button" class="btn btn-primary" onclick="submit()">提交</button>
+    <button id="submit" type="button" class="btn btn-primary" onclick="submit()">提交</button>
 </div>
 <script>
     const path = location.href.split(":")[0] + "://" + document.location.host;
@@ -82,7 +82,7 @@
     if(!confirm){
         return;
     }
-
+    $("#submit").attr("disabled",true);
     let formData = new FormData();
     formData.append("tomcat", tomcat);
     formData.append("name", fileName);
@@ -109,8 +109,10 @@
             setTimeout(()=>{
                 $("#progressHelp").html(data);
             },500);
+            $("#submit").attr("disabled",false);
         },
         error: function (xhr) {
+            $("#submit").attr("disabled",false);
             alert("上传出错");
         }
     });
