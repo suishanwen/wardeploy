@@ -79,6 +79,12 @@ def start(tomcat):
     shell(cmd)
 
 
+def running_log(_, start_response):
+    start_response('200 OK', [('Content-type', 'text/html')])
+    with open('app/log.html', 'r', encoding="utf-8") as fp:
+        yield fp.read().format(text=get_log("/data/wardeploy/nohup.out")).encode('utf-8')
+
+
 if __name__ == '__main__':
     from Resty import PathDispatcher
     from wsgiref.simple_server import make_server
@@ -87,6 +93,7 @@ if __name__ == '__main__':
     dispatcher = PathDispatcher()
     dispatcher.register('GET', '/', hello)
     dispatcher.register('POST', '/upload', upload)
+    dispatcher.register('POST', '/running_log', running_log)
 
     # Launch a basic server
     httpd = make_server('', 7777, dispatcher)
