@@ -16,7 +16,7 @@ def get_log(file):
 
 def hello(_, start_response):
     start_response('200 OK', [('Content-type', 'text/html')])
-    with open('app/hello.html', 'r', encoding="utf-8") as fp:
+    with open('app/index.html', 'r', encoding="utf-8") as fp:
         yield fp.read().encode('utf-8')
 
 
