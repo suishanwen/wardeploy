@@ -25,6 +25,8 @@
             color:blue;
         }
 
+
+
     </style>
 </head>
 <body>
@@ -40,7 +42,7 @@
     </div>
     <div class="form-group">
         <label for="tomcat">选择tomcat</label>
-        <select class="form-control" id="tomcat">
+        <select class="form-control" id="tomcat" onchange="changeSelection()">
             <option value="9093">9093 测试环境 数据库 OESv55Test</option>
             <option value="9193">9193 局端上报 数据库 JSTOES1016</option>
             <option value="9293">9293 北京服务包 数据库 JST_UNEAP</option>
@@ -64,6 +66,11 @@
 </div>
 <script>
     const path = location.href.split(":")[0] + "://" + document.location.host;
+
+    changeSelection = ()=>{
+        const tomcat = document.getElementById("tomcat").value;
+        localStorage.setItem("tomcat",tomcat);
+    }
 
     onProgress = (val) =>{
         const progress = (val.loaded/val.total*100).toFixed(2)
@@ -152,6 +159,14 @@
     checkWeb = () =>{
         window.open(`http://192.168.248.92:${document.getElementById("tomcat").value}/finance`);
     };
+
+    (()=>{
+        const tomcat = localStorage.getItem("tomcat");
+        if(tomcat){
+            $("#tomcat").val(tomcat);
+        }
+    })();
+
 </script>
 </body>
 </html>
