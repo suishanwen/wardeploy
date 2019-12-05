@@ -46,7 +46,8 @@ def shell(cmd):
 
 def unzip(port, file_name):
     cmd = f"""cd /data/wardeploy/file/{port}
-          unzip {file_name}"""
+    rm -rf mvcost
+    unzip {file_name}"""
     shell(cmd)
 
 
