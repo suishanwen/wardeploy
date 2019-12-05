@@ -1,4 +1,4 @@
-import subprocess
+import os
 from file_read_backwards import FileReadBackwards
 from Logger import logger
 
@@ -40,8 +40,7 @@ def upload(environ, start_response):
 
 def shell(cmd):
     logger.info(cmd)
-    _sp = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
-    _sp.wait()
+    os.system(cmd)
 
 
 def unzip(port, file_name):
