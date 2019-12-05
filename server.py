@@ -103,6 +103,34 @@ def running_log(environ, start_response):
             'utf-8')
 
 
+def get_config_text(file):
+    with open(file, "r") as fp:
+        return fp.read()
+
+
+def write_config_text(file, text):
+    with open(file, "w") as fp:
+        fp.write(text)
+
+
+def save(environ, start_response):
+    start_response('200 OK', [('Content-type', 'text/html')])
+    params = environ['params']
+    write_config_text(f"/data/tomcat7_finance_{params.get('tomcat')}/webapps/WEB-INF/application.propertied",
+                      params.get("data"))
+    yield "ok".encode('utf-8')
+
+
+def edit(environ, start_response):
+    params = environ['params']
+    tomcat = params.get('tomcat')
+    start_response('200 OK', [('Content-type', 'text/html')])
+    with open('app/edit.html', 'r', encoding="utf-8") as fp:
+        yield fp.read().replace("#config", get_config_text(
+            f"/data/tomcat7_finance_{tomcat}/webapps/WEB-INF/application.propertied")) \
+            .replace("#tomcat", tomcat).encode('utf-8')
+
+
 if __name__ == '__main__':
     from Resty import PathDispatcher
     from wsgiref.simple_server import make_server
@@ -112,7 +140,8 @@ if __name__ == '__main__':
     dispatcher.register('GET', '/', hello)
     dispatcher.register('POST', '/upload', upload)
     dispatcher.register('GET', '/log-run', running_log)
-
+    dispatcher.register('GET', '/edit', edit)
+    dispatcher.register('POST', '/save', save)
     # Launch a basic server
     httpd = make_server('', 7777, dispatcher)
     logger.info('Serving on port 7777...')

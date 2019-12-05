@@ -41,6 +41,7 @@
     <div class="form-group">
         <label for="tomcat">选择tomcat</label>
         <label class="log-view" onclick="runningLog()">查看日志</label>
+        <label class="log-view" onclick="editConfig()">修改配置</label>
         <select class="form-control" id="tomcat">
             <option value="9093">9093 测试环境 数据库 OESv55Test</option>
             <option value="9193">9193 局端上报 数据库 JSTOES1016</option>
@@ -67,6 +68,9 @@
         $("#progress").attr("aria-valuenow",progress);
         $("#progress")[0].style.width= progress + '%';
         $("#progress").html(progress + '%');
+        if(progress === 100){
+            $("#progressHelp").html("等待解压完成...请勿关闭");
+        }
     }
 
    submit = () => {
@@ -122,6 +126,13 @@
     runningLog = () => {
         window.open(`${path}/log-run?tomcat=${document.getElementById("tomcat").value}`);
     };
+
+
+    editConfig = () =>{
+        window.open(`${path}/edit?tomcat=${document.getElementById("tomcat").value}`);
+    };
+
+
 
 
 
