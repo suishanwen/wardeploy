@@ -25,14 +25,13 @@ def upload(environ, start_response):
     port = params.get('tomcat')
     tomcat = f"/data/tomcat7_finance_{port}"
     name = params.get("name")
-    file_name = f"{name.split('.')[0]}-{port}.zip"
     file = params.get("file")
-    with open(f"file/{file_name}", 'wb') as f:
+    with open(f"file/{port}/{name}", 'wb') as f:
         f.write(file)
     shutdown(port)
-    unzip(file_name)
+    unzip(port, name)
     rm(tomcat)
-    mv(tomcat, file_name)
+    mv(tomcat, port)
     cp(tomcat)
     start(tomcat)
     start_response('200 OK', [('Content-type', 'text/html')])
@@ -45,8 +44,8 @@ def shell(cmd):
     _sp.wait()
 
 
-def unzip(file_name):
-    cmd = f"""cd /data/wardeploy/file
+def unzip(port, file_name):
+    cmd = f"""cd /data/wardeploy/file/{port}
           unzip {file_name}"""
     shell(cmd)
 
@@ -56,8 +55,8 @@ def rm(tomcat):
     shell(cmd)
 
 
-def mv(tomcat, file_name):
-    cmd = f"mv /data/wardeploy/file/{file_name.split('.')[0]}/mvcost {tomcat}/webapps/finance"
+def mv(tomcat, port):
+    cmd = f"mv /data/wardeploy/file/{port}/mvcost {tomcat}/webapps/finance"
     shell(cmd)
 
 
