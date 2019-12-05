@@ -57,6 +57,7 @@
     </div>
 </form>
 <div class="form-group">
+    <button type="button" class="btn btn-default" onclick="checkWeb()">查看页面</button>
     <button id="log" type="button" class="btn btn-default" onclick="runningLog()">查看日志</button>
     <button id="edit" type="button" class="btn btn-danger" onclick="editConfig()">修改配置</button>
     <button id="submit" type="button" class="btn btn-primary" onclick="submit()">提交重启</button>
@@ -140,6 +141,9 @@
         window.location.href = `${path}/edit?tomcat=${document.getElementById("tomcat").value}`;
     };
 
+    checkWeb = () =>{
+        window.open(`http://192.168.248.92:${document.getElementById("tomcat").value}/finance`);
+    };
 </script>
 </body>
 </html>
