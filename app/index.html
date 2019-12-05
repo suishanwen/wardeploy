@@ -25,6 +25,7 @@
             color:blue;
         }
 
+
     </style>
 </head>
 <body>
@@ -68,14 +69,20 @@
 
    submit = () => {
     const val = document.getElementById("file").value;
-    if (!val) {
+    if (!val || val.indexOf(".zip") === -1) {
         alert("请选择zip包!");
         return;
     }
     const arr = val.split('\\');
     const fileName = arr[arr.length - 1];
+    const tomcat = document.getElementById("tomcat").value;
+    const confirm = window.confirm("确定要上传"+fileName+"到tomcat"+tomcat)
+    if(!confirm){
+        return;
+    }
+
     let formData = new FormData();
-    formData.append("tomcat", document.getElementById("tomcat").value);
+    formData.append("tomcat", tomcat);
     formData.append("name", fileName);
     formData.append("file", document.getElementById("file").files[0]);
     $.ajax({
@@ -108,8 +115,6 @@
     runningLog = () => {
         location.href = `${path}/log-run?tomcat=${document.getElementById("tomcat").value}`;
     };
-
-
 
 
 </script>
