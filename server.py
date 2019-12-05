@@ -1,12 +1,6 @@
-import functools
 import subprocess
-import uuid
-import configparser
 from file_read_backwards import FileReadBackwards
 from Logger import logger
-
-# read config
-config = configparser.ConfigParser()
 
 
 def get_log(file):
@@ -28,13 +22,14 @@ def hello(_, start_response):
 
 def upload(environ, start_response):
     params = environ['params']
-    tomcat = f"/data/tomcat7_finance_{params.get('tomcat')}"
+    port = params.get('tomcat')
+    tomcat = f"/data/tomcat7_finance_{port}"
     name = params.get("name")
-    file_name = f"{name.split('.')[0]}-{params.get('tomcat')}.zip"
+    file_name = f"{name.split('.')[0]}-{port}.zip"
     file = params.get("file")
     with open(f"file/{file_name}", 'wb') as f:
         f.write(file)
-    shutdown(tomcat)
+    shutdown(port)
     unzip(file_name)
     rm(tomcat)
     mv(tomcat, file_name)
@@ -71,8 +66,8 @@ def cp(tomcat):
     subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
 
 
-def shutdown(tomcat):
-    cmd = "ps -ef | grep " + tomcat + " | grep -v grep | awk '{print $2}' | xargs kill -9"
+def shutdown(port):
+    cmd = "ps -ef | grep tomcat7_finance_" + port + " | grep -v grep | awk '{print $2}' | xargs kill -9"
     logger.info(cmd)
     subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
 
