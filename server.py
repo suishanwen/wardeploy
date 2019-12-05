@@ -79,10 +79,12 @@ def start(tomcat):
     shell(cmd)
 
 
-def running_log(_, start_response):
+def running_log(environ, start_response):
+    params = environ['params']
     start_response('200 OK', [('Content-type', 'text/html')])
     with open('app/log.html', 'r', encoding="utf-8") as fp:
-        yield fp.read().format(text=get_log("/data/wardeploy/nohup.out")).encode('utf-8')
+        yield fp.read().format(text=get_log(f"/data/tomcat7_finance_{params.get('tomcat')}/logs/catalina.out")).encode(
+            'utf-8')
 
 
 if __name__ == '__main__':
@@ -93,7 +95,7 @@ if __name__ == '__main__':
     dispatcher = PathDispatcher()
     dispatcher.register('GET', '/', hello)
     dispatcher.register('POST', '/upload', upload)
-    dispatcher.register('POST', '/running_log', running_log)
+    dispatcher.register('GET', '/log-run', running_log)
 
     # Launch a basic server
     httpd = make_server('', 7777, dispatcher)
