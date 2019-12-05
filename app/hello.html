@@ -6,16 +6,23 @@
     <link href="https://bitcoinrobot.cn/file/assets/bootstrap.4.1.3/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-<div>
-    <input type="file" id="file"/>
-    <select id="tomcat">
-        <option value="9093">9093</option>
-        <option value="9193">9193</option>
-        <option value="9293">9293</option>
-        <option value="9393" selected>9393</option>
-    </select>
-    <button class="btn-primary" onclick="submit()">提交</button>
-</div>
+<form>
+    <div class="form-group">
+        <label for="file">文件</label>
+        <input type="file" id="file"/>
+        <small id="fileHelp" class="form-text text-muted">请选择zip包，包内包含mvcost这个文件夹</small>
+    </div>
+    <div class="form-group">
+        <label for="tomcat">选择tomcat</label>
+        <select class="form-control" id="tomcat">
+            <option value="9093">9093 测试环境 数据库OESv55Test</option>
+            <option value="9193">9193 局端上报 数据库JSTOES1016</option>
+            <option value="9293">9293 北京服务包 数据库JST_UNEAP</option>
+            <option value="9393" selected>9393 测试 数据库OESv55</option>
+        </select>
+    </div>
+    <button type="submit" class="btn btn-primary">提交</button>
+</form>
 <script>
     const path = location.href.split(":")[0] + "://" + document.location.host;
 
@@ -39,6 +46,14 @@
         .catch(error => console.error('Error:', error))
         .then(response => alert("成功"));
     }
+
+
+
+
+
+
+
+
 
 
 
