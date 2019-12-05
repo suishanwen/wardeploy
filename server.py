@@ -47,11 +47,12 @@ def upload(environ, start_response):
             mv(tomcat, port)
             cp(tomcat)
             start(tomcat)
+            yield "成功".encode('utf-8')
         except Exception as e:
             logger.error(str(e))
+            yield str(e).encode('utf-8')
         finally:
             locker[port] = False
-    yield "成功".encode('utf-8')
 
 
 def shell(cmd):
