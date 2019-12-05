@@ -48,6 +48,7 @@
         </select>
     </div>
     <div class="progress form-group">
+        <label for="progress">进度条</label>
         <div class="progress-bar" id="progress" role="progressbar" aria-valuenow="0" aria-valuemin="0"
              aria-valuemax="100"></div>
     </div>
@@ -58,7 +59,7 @@
 <div class="form-group">
     <button id="log" type="button" class="btn btn-default" onclick="runningLog()">查看日志</button>
     <button id="edit" type="button" class="btn btn-danger" onclick="editConfig()">修改配置</button>
-    <button id="submit" type="button" class="btn btn-primary" onclick="submit()">提交</button>
+    <button id="submit" type="button" class="btn btn-primary" onclick="submit()">提交重启</button>
 </div>
 <script>
     const path = location.href.split(":")[0] + "://" + document.location.host;
