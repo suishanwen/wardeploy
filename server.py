@@ -47,7 +47,7 @@ def shell(cmd):
 
 def unzip(file_name):
     cmd = f"""cd /data/wardeploy/file
-          unzip /data/wardeploy/file/{file_name}"""
+          unzip {file_name}"""
     shell(cmd)
 
 
