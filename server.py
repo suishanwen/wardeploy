@@ -116,7 +116,7 @@ def write_config_text(file, text):
 def save(environ, start_response):
     start_response('200 OK', [('Content-type', 'text/html')])
     params = environ['params']
-    write_config_text(f"/data/tomcat7_finance_{params.get('tomcat')}/finance/webapps/application.propertied",
+    write_config_text(f"/data/tomcat7_finance_{params.get('tomcat')}/finance/webapps/application.properties",
                       params.get("data"))
     yield "ok".encode('utf-8')
 
@@ -127,7 +127,7 @@ def edit(environ, start_response):
     start_response('200 OK', [('Content-type', 'text/html')])
     with open('app/edit.html', 'r', encoding="utf-8") as fp:
         yield fp.read().replace("#config", get_config_text(
-            f"/data/tomcat7_finance_{tomcat}/finance/webapps/application.propertied")) \
+            f"/data/tomcat7_finance_{tomcat}/finance/webapps/application.properties")) \
             .replace("#tomcat", tomcat).encode('utf-8')
 
 
