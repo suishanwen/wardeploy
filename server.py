@@ -57,7 +57,7 @@ def rm(tomcat):
 
 
 def mv(tomcat, file_name):
-    cmd = f"mv /data/wardeploy/file/{file_name.split('.')[0]} {tomcat}/webapps"
+    cmd = f"mv /data/wardeploy/file/{file_name.split('.')[0]}/mvcost {tomcat}/webapps/finance"
     shell(cmd)
 
 
