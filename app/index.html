@@ -40,8 +40,6 @@
     </div>
     <div class="form-group">
         <label for="tomcat">选择tomcat</label>
-        <label class="log-view" onclick="runningLog()">查看日志</label>
-        <label class="log-view" onclick="editConfig()">修改配置</label>
         <select class="form-control" id="tomcat">
             <option value="9093">9093 测试环境 数据库 OESv55Test</option>
             <option value="9193">9193 局端上报 数据库 JSTOES1016</option>
@@ -58,6 +56,8 @@
     </div>
 </form>
 <div class="form-group">
+    <button id="log" type="button" class="btn btn-default" onclick="runningLog()">查看日志</button>
+    <button id="edit" type="button" class="btn btn-danger" onclick="editConfig()">修改配置</button>
     <button id="submit" type="button" class="btn btn-primary" onclick="submit()">提交</button>
 </div>
 <script>
@@ -73,51 +73,58 @@
         }
     }
 
-   submit = () => {
-    const val = document.getElementById("file").value;
-    if (!val || val.indexOf(".zip") === -1) {
-        alert("请选择zip包!");
-        return;
+
+    btnDisabled = (state) =>{
+        $("#submit").attr("disabled",state);
+        $("#log").attr("disabled",state);
+        $("#edit").attr("disabled",state);
     }
-    const arr = val.split('\\');
-    const fileName = arr[arr.length - 1];
-    const tomcat = document.getElementById("tomcat").value;
-    const confirm = window.confirm("确定要上传"+fileName+"到tomcat"+tomcat)
-    if(!confirm){
-        return;
-    }
-    $("#submit").attr("disabled",true);
-    let formData = new FormData();
-    formData.append("tomcat", tomcat);
-    formData.append("name", fileName);
-    formData.append("file", document.getElementById("file").files[0]);
-    $.ajax({
-        url: `${path}/upload`,
-        type: 'POST',
-        cache: false,
-        data: formData,
-        processData: false,
-        contentType: false,
-        complete: () => {
-            $("#progressHelp").html("等待解压完成...请勿关闭");
-        },
-        xhr: function () {
-            var xhr = $.ajaxSettings.xhr();
-            if (onProgress && xhr.upload) {
-                xhr.upload.addEventListener("progress", onProgress, false);
-                return xhr;
-            }
-        },
-        success: function (data) {
-            console.log(data);
-            setTimeout(()=>{
-                $("#progressHelp").html(data);
-            },500);
-            $("#submit").attr("disabled",false);
-        },
-        error: function (xhr) {
-            $("#submit").attr("disabled",false);
-            alert("上传出错");
+
+    submit = () => {
+        const val = document.getElementById("file").value;
+        if (!val || val.indexOf(".zip") === -1) {
+            alert("请选择zip包!");
+            return;
+        }
+        const arr = val.split('\\');
+        const fileName = arr[arr.length - 1];
+        const tomcat = document.getElementById("tomcat").value;
+        const confirm = window.confirm("确定要上传"+fileName+"到tomcat"+tomcat)
+        if(!confirm){
+            return;
+        }
+        btnDisabled(true);
+        let formData = new FormData();
+        formData.append("tomcat", tomcat);
+        formData.append("name", fileName);
+        formData.append("file", document.getElementById("file").files[0]);
+        $.ajax({
+            url: `${path}/upload`,
+            type: 'POST',
+            cache: false,
+            data: formData,
+            processData: false,
+            contentType: false,
+            complete: () => {
+                $("#progressHelp").html("等待解压完成...请勿关闭");
+            },
+            xhr: function () {
+                var xhr = $.ajaxSettings.xhr();
+                if (onProgress && xhr.upload) {
+                    xhr.upload.addEventListener("progress", onProgress, false);
+                    return xhr;
+                }
+            },
+            success: function (data) {
+                console.log(data);
+                setTimeout(()=>{
+                    $("#progressHelp").html(data);
+                },500);
+                btnDisabled(false);
+            },
+            error: function (xhr) {
+                btnDisabled(false);
+                alert("上传出错");
         }
     });
   }
