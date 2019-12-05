@@ -91,7 +91,15 @@
         const arr = val.split('\\');
         const fileName = arr[arr.length - 1];
         const tomcat = document.getElementById("tomcat").value;
-        const confirm = window.confirm("确定要上传"+fileName+"到tomcat"+tomcat)
+        let confirm = window.confirm(`确定要上传${fileName}到tomcat${tomcat}替换重启?`);
+        if(!confirm){
+            return;
+        }
+        confirm = confirm = window.confirm(`再次确定要上传${fileName}到tomcat${tomcat}替换重启?`);
+        if(!confirm){
+            return;
+        }
+        confirm = confirm = window.confirm(`最后一次确定要上传${fileName}到tomcat${tomcat}替换重启?`);
         if(!confirm){
             return;
         }
