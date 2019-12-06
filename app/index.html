@@ -77,7 +77,7 @@
         $("#progress").attr("aria-valuenow",progress);
         $("#progress")[0].style.width= progress + '%';
         $("#progress").html(progress + '%');
-        if(progress === 100){
+        if(progress == 100.00){
             $("#progressHelp").html("等待解压完成...请勿关闭");
         }
     }
