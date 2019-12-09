@@ -155,7 +155,6 @@ restart = () => {
     const tomcat = document.getElementById("tomcat").value;
     const pass = prompt("请输入操作密码:");
     if(!pass){
-        alert("请输入操作密码!");
         return;
     }
     $.post(`${path}/restart`,{"pass":pass,"tomcat":tomcat},(data)=>{
