@@ -104,6 +104,11 @@ def running_log(environ, start_response):
             'utf-8')
 
 
+def get_file_bytes(file):
+    with open(file, "rb") as fp:
+        return fp.read()
+
+
 def get_config_text(file):
     with open(file, "r") as fp:
         return fp.read()
@@ -134,13 +139,19 @@ def edit(environ, start_response):
 
 def static(environ, start_response):
     path = environ['PATH_INFO'][1:]
-    if path.find(".css"):
+    if path.find(".css") != -1:
         start_response('200 OK', [('Content-type', 'text/css')])
+    elif path.find(".png") != -1:
+        start_response('200 OK', [('Content-type', 'image/png')])
     else:
         start_response('200 OK', [('Content-type', 'text/html')])
     try:
-        file = get_config_text(path)
-        yield file.encode("utf-8")
+        if path.find(".png") != -1:
+            file = get_file_bytes(path)
+            yield file
+        else:
+            file = get_config_text(path)
+            yield file.encode("utf-8")
     except Exception as e:
         yield str(e).encode("utf-8")
 
