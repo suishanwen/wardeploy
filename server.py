@@ -127,6 +127,24 @@ def save(environ, start_response):
     yield "ok".encode('utf-8')
 
 
+def restart(environ, start_response):
+    start_response('200 OK', [('Content-type', 'text/html')])
+    params = environ['params']
+    port = params.get("tomcat")
+    passwd = params.get("pass")
+    if passwd == 'a123456':
+        try:
+            tomcat = f"/data/tomcat7_finance_{port}"
+            shutdown(port)
+            start(tomcat)
+            yield "成功".encode('utf-8')
+        except Exception as e:
+            logger.error(str(e))
+            yield str(e).encode('utf-8')
+    else:
+        yield "操作密码错误！".encode('utf-8')
+
+
 def edit(environ, start_response):
     params = environ['params']
     tomcat = params.get('tomcat')
@@ -167,6 +185,7 @@ if __name__ == '__main__':
     dispatcher.register('GET', '/log-run', running_log)
     dispatcher.register('GET', '/edit', edit)
     dispatcher.register('POST', '/save', save)
+    dispatcher.register('POST', '/restart', restart)
     dispatcher.register('GET', '/static/?', static)
 
     # Launch a basic server

@@ -28,6 +28,9 @@
 
 
 
+
+
+
     </style>
 </head>
 <body>
@@ -64,109 +67,121 @@
     <button id="log" type="button" class="btn btn-default" onclick="runningLog()">查看日志</button>
     <button id="edit" type="button" class="btn btn-danger" onclick="editConfig()">修改配置</button>
     <button id="submit" type="button" class="btn btn-primary" onclick="submit()">提交重启</button>
+    <button id="restart" type="button" class="btn btn-danger" onclick="restart()">仅重启</button>
 </div>
 <script>
-    const path = location.href.split(":")[0] + "://" + document.location.host;
+const path = location.href.split(":")[0] + "://" + document.location.host;
 
-    changeSelection = ()=>{
-        const tomcat = document.getElementById("tomcat").value;
-        localStorage.setItem("tomcat",tomcat);
+changeSelection = () => {
+    const tomcat = document.getElementById("tomcat").value;
+    localStorage.setItem("tomcat", tomcat);
+};
+
+onProgress = (val) => {
+    const progress = (val.loaded / val.total * 100).toFixed(2)
+    $("#progress").attr("aria-valuenow", progress);
+    $("#progress")[0].style.width = progress + '%';
+    $("#progress").html(progress + '%');
+    if (progress == 100.00) {
+        $("#progressHelp").html("等待解压完成...请勿关闭");
     }
+};
 
-    onProgress = (val) =>{
-        const progress = (val.loaded/val.total*100).toFixed(2)
-        $("#progress").attr("aria-valuenow",progress);
-        $("#progress")[0].style.width= progress + '%';
-        $("#progress").html(progress + '%');
-        if(progress == 100.00){
+
+btnDisabled = (state) => {
+    $("#submit").attr("disabled", state);
+    $("#log").attr("disabled", state);
+    $("#edit").attr("disabled", state);
+};
+
+submit = () => {
+    const val = document.getElementById("file").value;
+    if (!val || val.indexOf(".zip") === -1) {
+        alert("请选择zip包!");
+        return;
+    }
+    const arr = val.split('\\');
+    const fileName = arr[arr.length - 1];
+    const tomcat = document.getElementById("tomcat").value;
+    let confirm = window.confirm(`确定要上传${fileName}到tomcat${tomcat}替换重启?`);
+    if (!confirm) {
+        return;
+    }
+    confirm = confirm = window.confirm(`再次确定要上传${fileName}到tomcat${tomcat}替换重启?`);
+    if (!confirm) {
+        return;
+    }
+    confirm = confirm = window.confirm(`最后一次确定要上传${fileName}到tomcat${tomcat}替换重启?`);
+    if (!confirm) {
+        return;
+    }
+    btnDisabled(true);
+    let formData = new FormData();
+    formData.append("tomcat", tomcat);
+    formData.append("name", fileName);
+    formData.append("file", document.getElementById("file").files[0]);
+    $.ajax({
+        url: `${path}/upload`,
+        type: 'POST',
+        cache: false,
+        data: formData,
+        processData: false,
+        contentType: false,
+        complete: () => {
             $("#progressHelp").html("等待解压完成...请勿关闭");
-        }
-    }
-
-
-    btnDisabled = (state) =>{
-        $("#submit").attr("disabled",state);
-        $("#log").attr("disabled",state);
-        $("#edit").attr("disabled",state);
-    }
-
-    submit = () => {
-        const val = document.getElementById("file").value;
-        if (!val || val.indexOf(".zip") === -1) {
-            alert("请选择zip包!");
-            return;
-        }
-        const arr = val.split('\\');
-        const fileName = arr[arr.length - 1];
-        const tomcat = document.getElementById("tomcat").value;
-        let confirm = window.confirm(`确定要上传${fileName}到tomcat${tomcat}替换重启?`);
-        if(!confirm){
-            return;
-        }
-        confirm = confirm = window.confirm(`再次确定要上传${fileName}到tomcat${tomcat}替换重启?`);
-        if(!confirm){
-            return;
-        }
-        confirm = confirm = window.confirm(`最后一次确定要上传${fileName}到tomcat${tomcat}替换重启?`);
-        if(!confirm){
-            return;
-        }
-        btnDisabled(true);
-        let formData = new FormData();
-        formData.append("tomcat", tomcat);
-        formData.append("name", fileName);
-        formData.append("file", document.getElementById("file").files[0]);
-        $.ajax({
-            url: `${path}/upload`,
-            type: 'POST',
-            cache: false,
-            data: formData,
-            processData: false,
-            contentType: false,
-            complete: () => {
-                $("#progressHelp").html("等待解压完成...请勿关闭");
-            },
-            xhr: function () {
-                var xhr = $.ajaxSettings.xhr();
-                if (onProgress && xhr.upload) {
-                    xhr.upload.addEventListener("progress", onProgress, false);
-                    return xhr;
-                }
-            },
-            success: function (data) {
-                console.log(data);
-                setTimeout(()=>{
-                    $("#progressHelp").html(data);
-                },500);
-                btnDisabled(false);
-            },
-            error: function (xhr) {
-                btnDisabled(false);
-                alert("上传出错");
+        },
+        xhr: function () {
+            var xhr = $.ajaxSettings.xhr();
+            if (onProgress && xhr.upload) {
+                xhr.upload.addEventListener("progress", onProgress, false);
+                return xhr;
+            }
+        },
+        success: function (data) {
+            console.log(data);
+            setTimeout(() => {
+                $("#progressHelp").html(data);
+            }, 500);
+            btnDisabled(false);
+        },
+        error: function (xhr) {
+            btnDisabled(false);
+            alert("上传出错");
         }
     });
-  }
+};
+
+restart = () => {
+    const tomcat = document.getElementById("tomcat").value;
+    const pass = prompt("请输入操作密码:");
+    if(!pass){
+        alert("请输入操作密码!");
+    }
+    $.post(`${path}/restart`,{"pass":pass,"tomcat":tomcat},(data)=>{
+        alert(data);
+    });
+};
+
+runningLog = () => {
+    window.location.href = `${path}/log-run?tomcat=${document.getElementById("tomcat").value}`;
+};
 
 
-    runningLog = () => {
-        window.location.href =`${path}/log-run?tomcat=${document.getElementById("tomcat").value}`;
-    };
+editConfig = () => {
+    window.location.href = `${path}/edit?tomcat=${document.getElementById("tomcat").value}`;
+};
 
+checkWeb = () => {
+    window.open(`http://192.168.248.92:${document.getElementById("tomcat").value}/finance`);
+};
 
-    editConfig = () =>{
-        window.location.href = `${path}/edit?tomcat=${document.getElementById("tomcat").value}`;
-    };
+(() => {
+    const tomcat = localStorage.getItem("tomcat");
+    if (tomcat) {
+        $("#tomcat").val(tomcat);
+    }
+})();
 
-    checkWeb = () =>{
-        window.open(`http://192.168.248.92:${document.getElementById("tomcat").value}/finance`);
-    };
-
-    (()=>{
-        const tomcat = localStorage.getItem("tomcat");
-        if(tomcat){
-            $("#tomcat").val(tomcat);
-        }
-    })();
 
 
 </script>
