@@ -1,4 +1,7 @@
 import os
+import time
+import datetime
+import pytz
 from file_read_backwards import FileReadBackwards
 from Logger import logger
 
@@ -10,10 +13,10 @@ locker = {
 }
 
 
-def get_log(file):
+def get_log(file, size=1000):
     with FileReadBackwards(file, encoding="utf-8") as frb:
         lines = []
-        while len(lines) < 1000:
+        while len(lines) < size:
             line = frb.readline()
             if not line:
                 break
@@ -32,7 +35,7 @@ def upload(environ, start_response):
     params = environ['params']
     port = params.get('tomcat')
     if locker[port]:
-        yield f"{port}当前正在处理锁定中,请稍后再试".encode('utf-8')
+        result = f"{port}当前正在处理锁定中,请稍后再试"
     else:
         locker[port] = True
         try:
@@ -47,12 +50,14 @@ def upload(environ, start_response):
             mv(tomcat, port)
             cp(tomcat)
             start(tomcat)
-            yield "成功".encode('utf-8')
+            result = "成功"
         except Exception as e:
             logger.error(str(e))
-            yield str(e).encode('utf-8')
+            result = str(e)
         finally:
             locker[port] = False
+    write_log(port, result)
+    yield result.encode('utf-8')
 
 
 def shell(cmd):
@@ -174,6 +179,24 @@ def static(environ, start_response):
         yield str(e).encode("utf-8")
 
 
+def from_time_stamp(seconds=0):
+    # remark: int(time.time()) 不能放到参数默认值，否则会初始化为常量
+    if seconds == 0:
+        seconds = int(time.time())
+    return datetime.datetime.fromtimestamp(seconds, pytz.timezone('Asia/Shanghai')).strftime(
+        '%Y-%m-%d %H:%M:%S')
+
+
+def write_log(port, result):
+    with open("file/log.txt", "a") as f:
+        f.write(f"{from_time_stamp()}[{port}] {result}\n")
+
+
+def log(_, start_response):
+    start_response('200 OK', [('Content-type', 'text/html')])
+    yield get_log("file/log.txt", 10).encode("utf-8")
+
+
 if __name__ == '__main__':
     from Resty import PathDispatcher
     from wsgiref.simple_server import make_server
@@ -187,6 +210,7 @@ if __name__ == '__main__':
     dispatcher.register('POST', '/save', save)
     dispatcher.register('POST', '/restart', restart)
     dispatcher.register('GET', '/static/?', static)
+    dispatcher.register('GET', '/log', log)
 
     # Launch a basic server
     httpd = make_server('', 7777, dispatcher)

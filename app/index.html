@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>upload</title>
+    <title>deploy</title>
     <script src="../static/jquery.min.js"></script>
     <link href="../static/bootstrap.min.css" rel="stylesheet">
     <style>
@@ -25,12 +25,12 @@
             color:blue;
         }
 
-
-
-
-
-
-
+       #logView{
+           position: absolute;
+           left: 820px;
+           top: 0;
+           color: green;
+       }
     </style>
 </head>
 <body>
@@ -62,6 +62,8 @@
         <small id="progressHelp" class="form-text text-muted"></small>
     </div>
 </form>
+<div class="form-group" id="logView">
+</div>
 <div class="form-group">
     <button type="button" class="btn btn-default" onclick="checkWeb()">查看页面</button>
     <button id="log" type="button" class="btn btn-default" onclick="runningLog()">查看日志</button>
@@ -175,12 +177,23 @@ checkWeb = () => {
     window.open(`http://192.168.248.92:${document.getElementById("tomcat").value}/finance`);
 };
 
+getLog = () =>{
+    $.get(`${path}/log`,(data)=>{
+        console.log(data);
+        $("#logView").html("<h6>操作记录</h6>"+data);
+    });
+}
+
 (() => {
     const tomcat = localStorage.getItem("tomcat");
     if (tomcat) {
         $("#tomcat").val(tomcat);
     }
+    getLog();
 })();
+
+
+
 
 
 
