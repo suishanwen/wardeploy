@@ -4,6 +4,7 @@ import datetime
 import pytz
 from file_read_backwards import FileReadBackwards
 from Logger import logger
+from StaticLoader import STATIC_LOADER
 
 locker = {
     "9093": False,
@@ -26,8 +27,7 @@ def get_log(file, size=1000):
 
 def hello(_, start_response):
     start_response('200 OK', [('Content-type', 'text/html')])
-    with open('app/index.html', 'r', encoding="utf-8") as fp:
-        yield fp.read().encode('utf-8')
+    yield STATIC_LOADER["app/index.html"].encode('utf-8')
 
 
 def upload(environ, start_response):
@@ -104,9 +104,8 @@ def start(tomcat):
 def running_log(environ, start_response):
     params = environ['params']
     start_response('200 OK', [('Content-type', 'text/html')])
-    with open('app/log.html', 'r', encoding="utf-8") as fp:
-        yield fp.read().format(text=get_log(f"/data/tomcat7_finance_{params.get('tomcat')}/logs/catalina.out")).encode(
-            'utf-8')
+    yield STATIC_LOADER["app/log.html"].format(
+        text=get_log(f"/data/tomcat7_finance_{params.get('tomcat')}/logs/catalina.out")).encode('utf-8')
 
 
 def get_file_bytes(file):
@@ -154,10 +153,8 @@ def edit(environ, start_response):
     params = environ['params']
     tomcat = params.get('tomcat')
     start_response('200 OK', [('Content-type', 'text/html')])
-    with open('app/edit.html', 'r', encoding="utf-8") as fp:
-        yield fp.read().replace("#config", get_config_text(
-            f"/data/tomcat7_finance_{tomcat}/webapps/application.properties")) \
-            .replace("#tomcat", tomcat).encode('utf-8')
+    yield STATIC_LOADER["app/edit.html"].replace("#config", get_config_text(
+        f"/data/tomcat7_finance_{tomcat}/webapps/application.properties")).replace("#tomcat", tomcat).encode('utf-8')
 
 
 def static(environ, start_response):
@@ -168,15 +165,7 @@ def static(environ, start_response):
         start_response('200 OK', [('Content-type', 'image/png')])
     else:
         start_response('200 OK', [('Content-type', 'text/html')])
-    try:
-        if path.find(".png") != -1:
-            file = get_file_bytes(path)
-            yield file
-        else:
-            file = get_config_text(path)
-            yield file.encode("utf-8")
-    except Exception as e:
-        yield str(e).encode("utf-8")
+    yield STATIC_LOADER[path]
 
 
 def from_time_stamp(seconds=0):
