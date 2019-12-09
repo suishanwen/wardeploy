@@ -132,6 +132,19 @@ def edit(environ, start_response):
             .replace("#tomcat", tomcat).encode('utf-8')
 
 
+def static(environ, start_response):
+    path = environ['PATH_INFO'][1:]
+    if path.find(".css"):
+        start_response('200 OK', [('Content-type', 'text/css')])
+    else:
+        start_response('200 OK', [('Content-type', 'text/html')])
+    try:
+        file = get_config_text(path)
+        yield file.encode("utf-8")
+    except Exception as e:
+        yield str(e).encode("utf-8")
+
+
 if __name__ == '__main__':
     from Resty import PathDispatcher
     from wsgiref.simple_server import make_server
@@ -143,6 +156,8 @@ if __name__ == '__main__':
     dispatcher.register('GET', '/log-run', running_log)
     dispatcher.register('GET', '/edit', edit)
     dispatcher.register('POST', '/save', save)
+    dispatcher.register('GET', '/static/?', static)
+
     # Launch a basic server
     httpd = make_server('', 7777, dispatcher)
     logger.info('Serving on port 7777...')

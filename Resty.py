@@ -17,6 +17,11 @@ class PathDispatcher:
         method = environ['REQUEST_METHOD'].lower()
         environ['params'] = {key: params.getvalue(key) for key in params}
         handler = self.pathmap.get((method, path), notfound_404)
+        if handler == notfound_404:
+            arr = path.split("/")
+            arr[len(arr) - 1] = "?"
+            path = "/".join(arr)
+            handler = self.pathmap.get((method, path), notfound_404)
         return handler(environ, start_response)
 
     def register(self, method, path, function):
