@@ -194,7 +194,7 @@ def write_log(port, result):
 
 def log(_, start_response):
     start_response('200 OK', [('Content-type', 'text/html')])
-    yield get_log("file/log.txt", 10).encode("utf-8")
+    yield get_log("file/log.txt", 15).encode("utf-8")
 
 
 if __name__ == '__main__':
