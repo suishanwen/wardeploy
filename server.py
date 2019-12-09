@@ -184,7 +184,7 @@ def from_time_stamp(seconds=0):
     if seconds == 0:
         seconds = int(time.time())
     return datetime.datetime.fromtimestamp(seconds, pytz.timezone('Asia/Shanghai')).strftime(
-        '%Y-%m-%d %H:%M:%S')
+        '%m-%d %H:%M:%S')
 
 
 def write_log(port, result):
