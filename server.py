@@ -50,10 +50,10 @@ def upload(environ, start_response):
             mv(tomcat, port)
             cp(tomcat)
             start(tomcat)
-            result = "成功"
+            result = "替包成功"
         except Exception as e:
             logger.error(str(e))
-            result = str(e)
+            result = f"替包:{str(e)}"
         finally:
             locker[port] = False
     write_log(port, result)
@@ -141,12 +141,14 @@ def restart(environ, start_response):
             tomcat = f"/data/tomcat7_finance_{port}"
             shutdown(port)
             start(tomcat)
-            yield "成功".encode('utf-8')
+            result = "重启成功"
         except Exception as e:
             logger.error(str(e))
-            yield str(e).encode('utf-8')
+            result = f"重启:{str(e)}"
     else:
-        yield "操作密码错误！".encode('utf-8')
+        result = "重启操作密码错误！"
+    write_log(port, result)
+    yield result.encode('utf-8')
 
 
 def edit(environ, start_response):
