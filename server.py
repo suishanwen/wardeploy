@@ -14,7 +14,7 @@ locker = {
 }
 
 
-def get_log(file, size=1000):
+def get_log(file, un_reverse=True, size=1000):
     with FileReadBackwards(file, encoding="utf-8") as frb:
         lines = []
         while len(lines) < size:
@@ -22,6 +22,8 @@ def get_log(file, size=1000):
             if not line:
                 break
             lines.append(line)
+    if un_reverse:
+        lines = lines[::-1]
     return "<br/>".join(lines)
 
 
@@ -185,7 +187,7 @@ def write_log(port, result):
 
 def log(_, start_response):
     start_response('200 OK', [('Content-type', 'text/html')])
-    yield get_log("file/log.txt", 15).encode("utf-8")
+    yield get_log("file/log.txt", False, 15).encode("utf-8")
 
 
 if __name__ == '__main__':
