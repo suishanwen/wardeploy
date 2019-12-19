@@ -128,9 +128,11 @@ def write_config_text(file, text):
 def save(environ, start_response):
     start_response('200 OK', [('Content-type', 'text/html')])
     params = environ['params']
-    write_config_text(f"/data/tomcat7_finance_{params.get('tomcat')}/webapps/application.properties",
+    port = params.get('tomcat')
+    write_config_text(f"/data/tomcat7_finance_{port}/webapps/application.properties",
                       params.get("data"))
-    cp(f"/data/tomcat7_finance_{params.get('tomcat')}")
+    cp(f"/data/tomcat7_finance_{port}")
+    write_log(port, "修改并替换配置成功!")
     yield "ok".encode('utf-8')
 
 
