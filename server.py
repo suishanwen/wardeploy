@@ -142,6 +142,7 @@ def restart(environ, start_response):
         try:
             tomcat = f"/data/tomcat7_finance_{port}"
             shutdown(port)
+            time.sleep(1)
             start(tomcat)
             result = "重启成功"
         except Exception as e:
