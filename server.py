@@ -130,6 +130,7 @@ def save(environ, start_response):
     params = environ['params']
     write_config_text(f"/data/tomcat7_finance_{params.get('tomcat')}/webapps/application.properties",
                       params.get("data"))
+    cp(f"/data/tomcat7_finance_{params.get('tomcat')}")
     yield "ok".encode('utf-8')
 
 
