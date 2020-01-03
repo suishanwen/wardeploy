@@ -198,6 +198,11 @@ def log(_, start_response):
     yield get_log("file/log.txt", False, 15).encode("utf-8")
 
 
+def get_package(_, start_response):
+    start_response('200 OK', [('Content-type', 'text/html')])
+    yield package_name.encode("utf-8")
+
+
 if __name__ == '__main__':
     from Resty import PathDispatcher
     from wsgiref.simple_server import make_server
@@ -212,6 +217,7 @@ if __name__ == '__main__':
     dispatcher.register('POST', '/restart', restart)
     dispatcher.register('GET', '/static/?', static)
     dispatcher.register('GET', '/log', log)
+    dispatcher.register('GET', '/get-package', get_package)
 
     # Launch a basic server
     httpd = make_server('', 7777, dispatcher)

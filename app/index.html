@@ -91,6 +91,7 @@ onProgress = (val) => {
 
 
 btnDisabled = (state) => {
+    $("#tomcat").attr("disabled", state);
     $("#submit").attr("disabled", state);
     $("#log").attr("disabled", state);
     $("#edit").attr("disabled", state);
@@ -175,7 +176,9 @@ editConfig = () => {
 };
 
 checkWeb = () => {
-    window.open(`http://192.168.248.92:${document.getElementById("tomcat").value}/finance`);
+    $.get(`${path}/get-package`,(data)=>{
+           window.open(`http://192.168.248.92:${document.getElementById("tomcat").value}/${data}`);
+    });
 };
 
 getLog = () =>{
@@ -192,11 +195,6 @@ getLog = () =>{
     }
     getLog();
 })();
-
-
-
-
-
 
 </script>
 </body>
