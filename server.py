@@ -93,12 +93,11 @@ def rm(tomcat):
 def mv(tomcat, port):
     path = f"/data/wardeploy/file/{port}"
     dir_list = os.listdir(path)
-    if len(dir_list) > 1:
-        cmd = f"mv {path}/ {tomcat}/webapps/{package_name}"
-    elif len(dir_list) == 1 and os.path.exists(dir_list[0]):
+    dir_list = list(filter(lambda x: x != '__MACOSX', dir_list))
+    if len(dir_list) == 1 and os.path.exists(dir_list[0]):
         cmd = f"mv {path}/{dir_list[0]}/ {tomcat}/webapps/{package_name}"
     else:
-        raise Exception("压缩包不正确！")
+        raise Exception("压缩包内没有项目唯一文件夹！")
     shell(cmd)
 
 
