@@ -70,8 +70,13 @@ def shell(cmd):
 
 
 def unzip(port, file_name):
-    cmd = f"""cd /data/wardeploy/file/{port}
-    rm -rf mvcost
+    path = f"/data/wardeploy/file/{port}"
+    dir_list = os.listdir(path)
+    for _dir in dir_list:
+        cmd = f"""cd {path}
+        rm -rf {_dir}"""
+        shell(cmd)
+    cmd = f"""cd {path}
     unzip {file_name}"""
     shell(cmd)
 
@@ -84,7 +89,14 @@ def rm(tomcat):
 
 
 def mv(tomcat, port):
-    cmd = f"mv /data/wardeploy/file/{port}/mvcost {tomcat}/webapps/{package_name}"
+    path = f"/data/wardeploy/file/{port}"
+    dir_list = os.listdir(path)
+    if len(dir_list) > 1:
+        cmd = f"mv {path} {tomcat}/webapps/{package_name}"
+    elif len(dir_list) == 1:
+        cmd = f"mv {path}/{dir_list[0]} {tomcat}/webapps/{package_name}"
+    else:
+        raise Exception("压缩包不正确！")
     shell(cmd)
 
 
