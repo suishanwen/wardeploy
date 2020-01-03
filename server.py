@@ -94,7 +94,7 @@ def mv(tomcat, port):
     path = f"/data/wardeploy/file/{port}"
     dir_list = os.listdir(path)
     dir_list = list(filter(lambda x: x != '__MACOSX', dir_list))
-    if len(dir_list) == 1 and os.path.exists(dir_list[0]):
+    if len(dir_list) == 1 and os.path.exists(f"{path}/{dir_list[0]}"):
         cmd = f"mv {path}/{dir_list[0]}/ {tomcat}/webapps/{package_name}"
     else:
         raise Exception(f"压缩包内没有项目唯一文件夹！{dir_list}")
