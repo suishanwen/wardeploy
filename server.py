@@ -97,7 +97,7 @@ def mv(tomcat, port):
     if len(dir_list) == 1 and os.path.exists(dir_list[0]):
         cmd = f"mv {path}/{dir_list[0]}/ {tomcat}/webapps/{package_name}"
     else:
-        raise Exception("压缩包内没有项目唯一文件夹！")
+        raise Exception(f"压缩包内没有项目唯一文件夹！{dir_list}")
     shell(cmd)
 
 
