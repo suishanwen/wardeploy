@@ -13,6 +13,8 @@ locker = {
     "9393": False
 }
 
+package_name = "OES"
+
 
 def get_log(file, un_reverse=True, size=1000):
     with FileReadBackwards(file, encoding="utf-8") as frb:
@@ -77,16 +79,18 @@ def unzip(port, file_name):
 def rm(tomcat):
     cmd = f"rm -rf {tomcat}/webapps/finance"
     shell(cmd)
+    cmd = f"rm -rf {tomcat}/webapps/{package_name}"
+    shell(cmd)
 
 
 def mv(tomcat, port):
-    cmd = f"mv /data/wardeploy/file/{port}/mvcost {tomcat}/webapps/finance"
+    cmd = f"mv /data/wardeploy/file/{port}/mvcost {tomcat}/webapps/{package_name}"
     shell(cmd)
 
 
 def cp(tomcat):
     cmd0 = f"rm -rf {tomcat}/webapps/WEB-INF/application.properties"
-    cmd = f"cp {tomcat}/webapps/application.properties {tomcat}/webapps/finance/WEB-INF/application.properties"
+    cmd = f"cp {tomcat}/webapps/application.properties {tomcat}/webapps/{package_name}/WEB-INF/application.properties"
     shell(cmd0)
     shell(cmd)
 
