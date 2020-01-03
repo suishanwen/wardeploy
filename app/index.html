@@ -31,6 +31,7 @@
            top: 0;
            color: green;
        }
+
     </style>
 </head>
 <body>
@@ -38,11 +39,10 @@
     <div class="form-group">
         <label for="file">文件</label>
         <input type="file" id="file"/>
-        <small class="form-text text-muted">请选择zip包，包内包含mvcost这个文件夹。换包前群内广播一下</small>
-        <small class="form-text text-muted">无需关心数据库配置文件,服务端会自动替换</small>
+        <small class="form-text text-muted">请选择zip包，包内包含mvcost(自定)这个文件夹。无需关心数据库配置文件,服务端会自动替换</small>
         <small class="form-text text-muted">打包前请更新代码，等待构建完成，并手动publish到tomcat,等待synchronized再将mvcost压缩成zip</small>
-        <small class="form-text text-muted">必要时需要选择所有模块，右键vadp-view生成代码</small>
-        <img src="../static/img.png" style="width:800px;height:400px"/>
+        <small class="form-text text-muted">必要时需要选择所有模块，右键vadp-view生成代码。换包前群内广播一下</small>
+        <img src="../static/img.png" style="width:800px;height:350px"/>
     </div>
     <div class="form-group">
         <label for="tomcat">选择tomcat</label>
@@ -195,6 +195,7 @@ getLog = () =>{
     }
     getLog();
 })();
+
 
 </script>
 </body>
